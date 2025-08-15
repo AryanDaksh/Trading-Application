@@ -32,6 +32,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/two-factor/otp/{otp}")
     public ResponseEntity<AuthResponse> verifyTwoFactorAuth(@RequestParam("otp") String otp, @RequestParam("sessionId") String sessionId) {
         AuthResponse response = authService.verify2FAOtp(otp, sessionId);
         return new ResponseEntity<>(response, HttpStatus.OK);

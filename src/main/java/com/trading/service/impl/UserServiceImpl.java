@@ -1,15 +1,26 @@
 package com.trading.service.impl;
 
 import com.trading.config.JwtProvider;
+import com.trading.web.request.ForgotPasswordTokenRequest;
+import com.trading.entity.ForgotPasswordToken;
 import com.trading.entity.TwoFactorAuthentication;
 import com.trading.entity.User;
-import com.trading.enums.VERIFICATION_TYPE;
+import com.trading.entity.VerificationCode;
+import com.trading.enums.VerificationType;
 import com.trading.repository.UserRepo;
+import com.trading.service.EmailService;
+import com.trading.service.ForgotPasswordService;
 import com.trading.service.UserService;
+import com.trading.service.VerificationCodeService;
+import com.trading.utils.OTPUtils;
+import com.trading.web.request.ResetPasswordRequest;
+import com.trading.web.response.AuthResponse;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Aryan Daksh
@@ -20,14 +31,78 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
+    private final VerificationCodeService verificationCodeService;
+    private final EmailService emailService;
+    private final ForgotPasswordService forgotPasswordService;
+    private final UserService userService;
 
     @Override
+    public void sendVerificationOtp(String jwtToken, VerificationType verificationType) throws MessagingException {
+        User user = findByJwt(jwtToken);
+        VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user.getId());
+        if (verificationCode != null) {
+            verificationCodeService.deleteVerificationCode(verificationCode);
+        }
+        verificationCode = verificationCodeService.sendVerificationCode(user, verificationType);
+        if (verificationType.equals(VerificationType.EMAIL)) {
+            emailService.sendVerificationOtpMail(user.getEmail(), verificationCode.getOtp());
+        }
+    }
+
+    @Override
+    public User verifyOtpAndEnableTwoFactor(String jwtToken, String otp) {
+        User user = findByJwt(jwtToken);
+        VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user.getId());
+        if (verificationCode == null) {
+            throw new IllegalStateException("No OTP found. Please request a new one.");
+        }
+        String sendTo = verificationCode.getVerificationType() == VerificationType.EMAIL ? user.getEmail() : verificationCode.getMobile();
+        if (!verificationCode.getOtp().equals(otp)) {
+            throw new IllegalStateException("Invalid OTP provided for two-factor authentication.");
+        }
+        User updatedUser = enableTwoFactorAuth(verificationCode.getVerificationType(), sendTo, user);
+        verificationCodeService.deleteVerificationCode(verificationCode);
+        return updatedUser;
+    }
+
+    @Override
+    public AuthResponse sendForgotPasswordOtp(String jwtToken, ForgotPasswordTokenRequest forgotPasswordTokenRequest) throws MessagingException {
+        User user = findByEmail(forgotPasswordTokenRequest.getSendTo());
+        String otp = OTPUtils.generateOtp();
+        UUID uuid = UUID.randomUUID();
+        String id = uuid.toString();
+
+        ForgotPasswordToken forgotPasswordToken = forgotPasswordService.findByUser(user.getId());
+        if (forgotPasswordToken == null) {
+            forgotPasswordToken = forgotPasswordService.createToken(user, id, otp, forgotPasswordTokenRequest.getVerificationType(), forgotPasswordTokenRequest.getSendTo());
+        }
+        if (forgotPasswordTokenRequest.getVerificationType() == VerificationType.EMAIL) {
+            emailService.sendVerificationOtpMail(user.getEmail(), forgotPasswordToken.getOtp());
+        }
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setSessionId(forgotPasswordToken.getId());
+        authResponse.setMessage("Forgot Password OTP sent successfully!");
+        return authResponse;
+    }
+
+    @Override
+    public User resetPassword(String id, ResetPasswordRequest resetPasswordRequest, String jwtToken) {
+        ForgotPasswordToken forgotPasswordToken = forgotPasswordService.findById(id);
+        Boolean isVerified = forgotPasswordToken.getOtp().equals(resetPasswordRequest.getOtp());
+        if (isVerified) {
+            updatePassword(forgotPasswordToken.getUser(), resetPasswordRequest.getPassword());
+
+        }
+        return null;
+    }
+
     public User findByEmail(String email) {
         User user = userRepo.findByEmail(email);
         if (user == null) {
             throw new IllegalStateException("User not found with the provided JWT token.");
         }
-        return user;    }
+        return user;
+    }
 
     @Override
     public User findByJwt(String jwtToken) {
@@ -39,7 +114,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
     public User findById(Long userId) {
         Optional<User> userOptional = userRepo.findById(userId);
         if (userOptional.isEmpty()){
@@ -48,8 +122,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    @Override
-    public User enableTwoFactorAuth(VERIFICATION_TYPE verificationType, String sendTo, User user) {
+    public User enableTwoFactorAuth(VerificationType verificationType, String sendTo, User user) {
         TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication();
         twoFactorAuthentication.setIsEnabled(true);
         twoFactorAuthentication.setSendTo(verificationType);
@@ -58,7 +131,6 @@ public class UserServiceImpl implements UserService {
         return userRepo.save(user);
     }
 
-    @Override
     public User updatePassword(User user, String newPassword) {
         user.setPassword(newPassword);
         return userRepo.save(user);

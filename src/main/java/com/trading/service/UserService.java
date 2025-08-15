@@ -1,7 +1,11 @@
 package com.trading.service;
 
+import com.trading.web.request.ForgotPasswordTokenRequest;
 import com.trading.entity.User;
-import com.trading.enums.VERIFICATION_TYPE;
+import com.trading.enums.VerificationType;
+import com.trading.web.request.ResetPasswordRequest;
+import com.trading.web.response.AuthResponse;
+import jakarta.mail.MessagingException;
 
 /**
  * @author Aryan Daksh
@@ -9,9 +13,9 @@ import com.trading.enums.VERIFICATION_TYPE;
  * @since 10-08-2025 23:28
  */
 public interface UserService {
-    public User findByEmail(String email);
-    public User findByJwt(String jwtToken);
-    public User findById(Long userId);
-    public User enableTwoFactorAuth(VERIFICATION_TYPE verificationType, String sendTo ,User user);
-    public User updatePassword(User user, String newPassword);
+    void sendVerificationOtp(String jwtToken, VerificationType verificationType) throws MessagingException;
+    User verifyOtpAndEnableTwoFactor(String jwtToken, String otp);
+    AuthResponse sendForgotPasswordOtp(String jwtToken, ForgotPasswordTokenRequest forgotPasswordTokenRequest) throws MessagingException;
+    User resetPassword(String id, ResetPasswordRequest resetPasswordRequest, String jwtToken);
+    User findByJwt(String jwtToken);
 }

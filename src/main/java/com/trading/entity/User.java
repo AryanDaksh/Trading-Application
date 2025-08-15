@@ -1,7 +1,7 @@
 package com.trading.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.trading.enums.USER_ROLE;
+import com.trading.enums.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +23,6 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String email;
-    private USER_ROLE role = USER_ROLE.ROLE_USER;
+    private UserRole role = UserRole.ROLE_USER;
     private TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication();
 }

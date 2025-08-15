@@ -1,6 +1,6 @@
 package com.trading.entity;
 
-import com.trading.enums.VERIFICATION_TYPE;
+import com.trading.enums.VerificationType;
 import jakarta.persistence.Embeddable;
 import lombok.Data;
 
@@ -13,5 +13,5 @@ import lombok.Data;
 @Embeddable
 public class TwoFactorAuthentication {
     private Boolean isEnabled = false;
-    private VERIFICATION_TYPE sendTo;
+    private VerificationType sendTo;
 }
