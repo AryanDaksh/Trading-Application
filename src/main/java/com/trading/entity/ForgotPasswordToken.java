@@ -4,6 +4,8 @@ import com.trading.enums.VerificationType;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.Instant;
+
 /**
  * @author Aryan Daksh
  * @version 1.0
@@ -20,4 +22,9 @@ public class ForgotPasswordToken {
     private String otp;
     private VerificationType verificationType;
     private String sendTo;
+    private Instant expirationTime;
+
+    public boolean isExpired() {
+        return Instant.now().isAfter(this.expirationTime);
+    }
 }

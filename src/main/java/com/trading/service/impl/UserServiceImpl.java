@@ -1,6 +1,7 @@
 package com.trading.service.impl;
 
 import com.trading.config.JwtProvider;
+import com.trading.repository.ForgotPasswordRepo;
 import com.trading.web.request.ForgotPasswordTokenRequest;
 import com.trading.entity.ForgotPasswordToken;
 import com.trading.entity.TwoFactorAuthentication;
@@ -14,11 +15,14 @@ import com.trading.service.UserService;
 import com.trading.service.VerificationCodeService;
 import com.trading.utils.OTPUtils;
 import com.trading.web.request.ResetPasswordRequest;
+import com.trading.web.response.ApiResponse;
 import com.trading.web.response.AuthResponse;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,7 +38,8 @@ public class UserServiceImpl implements UserService {
     private final VerificationCodeService verificationCodeService;
     private final EmailService emailService;
     private final ForgotPasswordService forgotPasswordService;
-    private final UserService userService;
+    private final ForgotPasswordRepo forgotPasswordRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void sendVerificationOtp(String jwtToken, VerificationType verificationType) throws MessagingException {
@@ -56,11 +61,10 @@ public class UserServiceImpl implements UserService {
         if (verificationCode == null) {
             throw new IllegalStateException("No OTP found. Please request a new one.");
         }
-        String sendTo = verificationCode.getVerificationType() == VerificationType.EMAIL ? user.getEmail() : verificationCode.getMobile();
         if (!verificationCode.getOtp().equals(otp)) {
             throw new IllegalStateException("Invalid OTP provided for two-factor authentication.");
         }
-        User updatedUser = enableTwoFactorAuth(verificationCode.getVerificationType(), sendTo, user);
+        User updatedUser = enableTwoFactorAuth(verificationCode.getVerificationType(), user);
         verificationCodeService.deleteVerificationCode(verificationCode);
         return updatedUser;
     }
@@ -86,14 +90,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User resetPassword(String id, ResetPasswordRequest resetPasswordRequest, String jwtToken) {
+    public ApiResponse resetPassword(String id, ResetPasswordRequest resetPasswordRequest) {
         ForgotPasswordToken forgotPasswordToken = forgotPasswordService.findById(id);
-        Boolean isVerified = forgotPasswordToken.getOtp().equals(resetPasswordRequest.getOtp());
+        if (forgotPasswordToken.getExpirationTime().isBefore(Instant.now())) {
+            forgotPasswordRepo.delete(forgotPasswordToken);
+            throw new IllegalStateException("This password reset token has expired.");
+        }
+        boolean isVerified = forgotPasswordToken.getOtp().equals(resetPasswordRequest.getOtp());
         if (isVerified) {
             updatePassword(forgotPasswordToken.getUser(), resetPasswordRequest.getPassword());
-
+            forgotPasswordRepo.delete(forgotPasswordToken);
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setMessage("Password reset successfully.");
+            return apiResponse;
         }
-        return null;
+        throw new IllegalStateException("Invalid OTP provided for password reset.");
     }
 
     public User findByEmail(String email) {
@@ -122,7 +133,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    public User enableTwoFactorAuth(VerificationType verificationType, String sendTo, User user) {
+    public User enableTwoFactorAuth(VerificationType verificationType, User user) {
         TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication();
         twoFactorAuthentication.setIsEnabled(true);
         twoFactorAuthentication.setSendTo(verificationType);
@@ -131,8 +142,8 @@ public class UserServiceImpl implements UserService {
         return userRepo.save(user);
     }
 
-    public User updatePassword(User user, String newPassword) {
-        user.setPassword(newPassword);
-        return userRepo.save(user);
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepo.save(user);
     }
 }

@@ -8,6 +8,7 @@ import com.trading.service.ForgotPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -28,6 +29,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         token.setVerificationType(verificationType);
         token.setSendTo(sendTo);
         token.setId(id);
+        token.setExpirationTime(Instant.now().plusSeconds(600));
         return forgotPasswordRepo.save(token);
     }
 

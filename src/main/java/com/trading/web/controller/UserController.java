@@ -5,6 +5,7 @@ import com.trading.entity.User;
 import com.trading.enums.VerificationType;
 import com.trading.service.UserService;
 import com.trading.web.request.ResetPasswordRequest;
+import com.trading.web.response.ApiResponse;
 import com.trading.web.response.AuthResponse;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,8 @@ public class UserController {
     }
 
     @PatchMapping("/api/users/reset-password/verify-otp")
-    public ResponseEntity<User> resetPassword(@RequestParam String id, @RequestBody ResetPasswordRequest resetPasswordRequest, @RequestHeader("Authorization") String jwtToken) {
-        User updatedUser = userService.resetPassword(id, resetPasswordRequest, jwtToken);
-        return new  ResponseEntity<>(updatedUser, HttpStatus.OK);
+    public ResponseEntity<ApiResponse> resetPassword(@RequestParam String id, @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        ApiResponse apiResponse = userService.resetPassword(id, resetPasswordRequest);
+        return new  ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }
