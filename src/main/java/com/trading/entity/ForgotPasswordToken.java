@@ -23,8 +23,4 @@ public class ForgotPasswordToken {
     private VerificationType verificationType;
     private String sendTo;
     private Instant expirationTime;
-
-    public boolean isExpired() {
-        return Instant.now().isAfter(this.expirationTime);
-    }
 }
