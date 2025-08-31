@@ -24,7 +24,7 @@ import java.util.Date;
 public class Coin {
     @Id
     @JsonProperty("id")
-    private Integer id;
+    private String id;
 
     @JsonProperty("symbol")
     private String symbol;

@@ -88,4 +88,61 @@ public class CoinGekkoClientImpl implements CoinGekkoClient {
             return null;
         }
     }
+
+    @Override
+    public String searchCoin(String keyword) {
+        String uri = baseUrl + SEARCH_COIN_PATH + keyword;
+        try {
+            log.debug("Searching Coin from CoinGecko API...");
+            return webClient.get()
+                    .uri(uri)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException ex) {
+            log.error("Error response from CoinGecko API. Status: {}, Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
+            return null;
+        } catch (Exception ex) {
+            log.error("An unexpected error occurred while calling CoinGecko API", ex);
+            return null;
+        }
+    }
+
+    @Override
+    public String getTop50CoinByMarketCap() {
+        String uri = baseUrl + TOP_50_MARKET_CAP_PATH;
+        try {
+            log.debug("Fetching Top 50 Coins by Market Cap from CoinGecko API...");
+            return webClient.get()
+                    .uri(uri)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException ex) {
+            log.error("Error response from CoinGecko API. Status: {}, Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
+            return null;
+        } catch (Exception ex) {
+            log.error("An unexpected error occurred while calling CoinGecko API", ex);
+            return null;
+        }
+    }
+
+    @Override
+    public String getTrendingCoins() {
+        String uri = baseUrl + TRENDING_COIN_PATH;
+        try {
+            log.debug("Fetching Top 50 Coins by Market Cap from CoinGecko API...");
+            return webClient.get()
+                    .uri(uri)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException ex) {
+            log.error("Error response from CoinGecko API. Status: {}, Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
+            return null;
+        } catch (Exception ex) {
+            log.error("An unexpected error occurred while calling CoinGecko API", ex);
+            return null;
+        }
+    }
 }

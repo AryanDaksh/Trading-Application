@@ -12,6 +12,8 @@ import java.util.List;
 public interface CoinGekkoClient {
     List<Coin> getCoinList();
     String getMarketChart(String coinId, int days);
-
     String getCoinDetails(String coinId);
+    String searchCoin(String keyword);
+    String getTop50CoinByMarketCap();
+    String getTrendingCoins();
 }

@@ -14,8 +14,8 @@ public interface CoinService {
     List<Coin> getCoinList(int page);
     String getMarketChart(String coinId, int days);
     String getCoinDetails(String coinId) throws JsonProcessingException;
-    Coin findCoinById(String coinId);
+    Coin findCoinById(String coinId) throws Exception;
     String searchCoin(String keyword);
-    String getTop50CoinByMarketCap(int page);
-    String getTradingCoins(int page);
+    String getTop50CoinByMarketCap();
+    String getTrendingCoins();
 }

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @version 1.0
  * @since 15-08-2025 13:33
  */
-public interface CoinRepo extends JpaRepository<Coin, Integer> {
+public interface CoinRepo extends JpaRepository<Coin, String> {
 }

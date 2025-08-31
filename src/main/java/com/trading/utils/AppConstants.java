@@ -15,4 +15,7 @@ public class AppConstants {
     public static final String COINS_LIST_PATH = "/coins/markets?vs_currency=usd&per_page=10&page=";
     public static final String COINS = "/coins/";
     public static final String MARKET_CHART_PATH = "/market_chart?vs_currency=usd&days=";
+    public static final String SEARCH_COIN_PATH = "/search?query=";
+    public static final String TOP_50_MARKET_CAP_PATH = "/markets?vs_currency=usd&per_page=50";
+    public static final String TRENDING_COIN_PATH = "/search/trending";
 }
