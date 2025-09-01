@@ -4,6 +4,7 @@ import com.trading.entity.Coin;
 import com.trading.entity.Order;
 import com.trading.entity.User;
 import com.trading.entity.WalletTransaction;
+import com.trading.enums.OrderType;
 import com.trading.service.CoinService;
 import com.trading.service.OrderService;
 import com.trading.service.UserService;
@@ -35,7 +36,6 @@ public class OrderController {
         User user = userService.findUserProfileByJwt(jwt);
         Coin coin = coinService.findCoinById(createOrderRequest.getCoinId());
         Order order = orderService.processOrder(coin, createOrderRequest.getQuantity(), createOrderRequest.getOrderType(), user);
-
         if (order.getUser().getId().equals(user.getId())) {
             return new ResponseEntity<>(order, HttpStatus.OK);
         } else {
@@ -44,7 +44,9 @@ public class OrderController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Order>> getAllOrders(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) String order_type, @RequestParam(required = false) String asset_symbol) throws Exception {
-
+    public ResponseEntity<List<Order>> getAllOrdersForUser(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) OrderType orderType, @RequestParam(required = false) String assetSymbol) throws Exception {
+        Long userId = userService.findUserProfileByJwt(jwt).getId();
+        List<Order> userOrders = orderService.getAllOrders(userId, orderType, assetSymbol);
+        return new ResponseEntity<>(userOrders, HttpStatus.OK);
     }
 }
