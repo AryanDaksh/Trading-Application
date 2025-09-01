@@ -26,7 +26,7 @@ public class UserController {
 
     @GetMapping("/api/users/profile")
     public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwtToken) {
-        User user = userService.findByJwt(jwtToken);
+        User user = userService.findUserProfileByJwt(jwtToken);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

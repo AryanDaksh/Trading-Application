@@ -24,7 +24,7 @@ public class CoinController {
     private final CoinService coinService;
     private final ObjectMapper objectMapper;
 
-    @GetMapping
+    @GetMapping("/list")
     ResponseEntity<List<Coin>> getCoinList(@RequestParam("page") int page) {
         List<Coin> coins = coinService.getCoinList(page);
         return new ResponseEntity<>(coins, HttpStatus.ACCEPTED);

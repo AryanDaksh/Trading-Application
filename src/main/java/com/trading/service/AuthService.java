@@ -30,7 +30,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public AuthResponse registerUser(User registrationRequest) {
+    public AuthResponse registerUser(final User registrationRequest) {
         if (userRepo.findByEmail(registrationRequest.getEmail()) != null) {
             throw new IllegalStateException("This email is already registered.");
         }
@@ -57,7 +57,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse loginUser(User loginRequest) throws MessagingException {
+    public AuthResponse loginUser(final User loginRequest) throws MessagingException {
         Authentication authentication = requestValidator.authenticate(loginRequest);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -75,7 +75,7 @@ public class AuthService {
         return authResponse;
     }
 
-    private AuthResponse initiateTwoFactorAuth(User user, Authentication authentication) throws MessagingException {
+    private AuthResponse initiateTwoFactorAuth(final User user, final Authentication authentication) throws MessagingException {
         String jwtToken = JwtProvider.generateToken(authentication);
         String otp = OTPUtils.generateOtp();
 
@@ -94,7 +94,7 @@ public class AuthService {
         return authResponse;
     }
 
-    public AuthResponse verify2FAOtp(String otp, String sessionId) {
+    public AuthResponse verify2FAOtp(final String otp, final String sessionId) {
         TwoFactorOTP twoFactorOTP = twoFactorOTPService.findById(sessionId);
 
         if (twoFactorOTPService.verifyTwoFactorOTP(twoFactorOTP, otp)) {

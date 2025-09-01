@@ -32,8 +32,8 @@ public class CoinGekkoClientImpl implements CoinGekkoClient {
     }
 
     @Override
-    public List<Coin> getCoinList() {
-        String uri = baseUrl + COINS_LIST_PATH;
+    public List<Coin> getCoinList(int page) {
+        String uri = baseUrl + COINS_LIST_PATH + page;
         try {
             log.debug("Fetching Coin List from CoinGecko API...");
             return webClient.get()

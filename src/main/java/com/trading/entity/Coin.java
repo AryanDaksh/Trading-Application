@@ -20,7 +20,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "coins")
+@Table(name = "coin")
 public class Coin {
     @Id
     @JsonProperty("id")
@@ -97,7 +97,7 @@ public class Coin {
 
     @JsonProperty("roi")
     @JsonIgnore
-    private Object roi;
+    private String roi;
 
     @JsonProperty("last_updated")
     private String lastUpdated;

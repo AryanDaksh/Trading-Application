@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendVerificationOtp(String jwtToken, VerificationType verificationType) throws MessagingException {
-        User user = findByJwt(jwtToken);
+        User user = findUserProfileByJwt(jwtToken);
         VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user.getId());
         if (verificationCode != null) {
             verificationCodeService.deleteVerificationCode(verificationCode);
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User verifyOtpAndEnableTwoFactor(String jwtToken, String otp) {
-        User user = findByJwt(jwtToken);
+        User user = findUserProfileByJwt(jwtToken);
         VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user.getId());
         if (verificationCode == null) {
             throw new IllegalStateException("No OTP found. Please request a new one.");
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByJwt(String jwtToken) {
+    public User findUserProfileByJwt(String jwtToken) {
         String email = JwtProvider.getEmailFromToken(jwtToken);
         User user = userRepo.findByEmail(email);
         if (user == null) {

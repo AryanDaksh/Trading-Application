@@ -10,7 +10,7 @@ import java.util.List;
  * @since 15-08-2025 13:50
  */
 public interface CoinGekkoClient {
-    List<Coin> getCoinList();
+    List<Coin> getCoinList(int page);
     String getMarketChart(String coinId, int days);
     String getCoinDetails(String coinId);
     String searchCoin(String keyword);

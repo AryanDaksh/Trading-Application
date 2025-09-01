@@ -18,5 +18,5 @@ public interface UserService {
     User verifyOtpAndEnableTwoFactor(String jwtToken, String otp);
     AuthResponse sendForgotPasswordOtp(String jwtToken, ForgotPasswordTokenRequest forgotPasswordTokenRequest) throws MessagingException;
     ApiResponse resetPassword(String id, ResetPasswordRequest resetPasswordRequest);
-    User findByJwt(String jwtToken);
+    User findUserProfileByJwt(String jwtToken);
 }
