@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author Aryan Daksh
  * @version 1.0
@@ -33,5 +35,22 @@ public class WithdrawalController {
         walletService.addBalance(wallet, -withdrawal.getAmount());
         //WalletTransaction walletTransaction = wa
         return new  ResponseEntity<>(withdrawal, HttpStatus.OK);
+    }
+
+    @PatchMapping("/admin/{id}/proceed/{accept}")
+    public ResponseEntity<?> processWithdrawal(@PathVariable Long id, @PathVariable Boolean accept, @RequestHeader("Authorization") String jwt) throws Exception {
+        User user = userService.findUserProfileByJwt(jwt);
+        Withdrawal withdrawal = withdrawalService.processWithdrawal(id, accept);
+        Wallet wallet = walletService.getUserWallet(user);
+        if(!accept) {
+            walletService.addBalance(wallet, withdrawal.getAmount());
+        }
+        return new ResponseEntity<>(withdrawal, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/history")
+    public ResponseEntity<List<Withdrawal>> getAllWithdrawalHistory(@RequestHeader("Authorization") String jwt) {
+        List<Withdrawal> withdrawals = withdrawalService.getAllWithdrawals();
+        return new ResponseEntity<>(withdrawals, HttpStatus.OK);
     }
 }
