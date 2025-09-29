@@ -9,6 +9,6 @@ import com.trading.entity.User;
  * @since 05-09-2025 22:33
  */
 public interface PaymentDetailsService {
-    public PaymentDetails addPaymentDetails(String accountNumber, String accountHolderName, String ifscCode, String bankName, User user);
-    public PaymentDetails getPaymentDetailsByUser(User user);
+    public PaymentDetails addPaymentDetails(final String accountNumber, final String accountHolderName, final String ifscCode, final String bankName, final User user);
+    public PaymentDetails getPaymentDetailsByUser(final User user);
 }

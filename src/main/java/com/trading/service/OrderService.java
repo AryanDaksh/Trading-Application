@@ -14,8 +14,8 @@ import java.util.List;
  * @since 01-09-2025 14:45
  */
 public interface OrderService {
-    Order createOrder(User user, OrderItem orderItem, OrderType orderType);
-    Order findOrderById(Long id) throws Exception;
-    List<Order> getAllOrders(Long userId, OrderType orderType, String assetSymbol);
-    Order processOrder(Coin coin, Double quantity, OrderType orderType, User user) throws Exception;
+    Order createOrder(final User user, final OrderItem orderItem, final OrderType orderType);
+    Order findOrderById(final Long id) throws Exception;
+    List<Order> getAllOrders(final Long userId, final OrderType orderType, final String assetSymbol);
+    Order processOrder(final Coin coin, final Double quantity, final OrderType orderType, final User user) throws Exception;
 }

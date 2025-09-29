@@ -4,6 +4,10 @@ import com.razorpay.Payment;
 import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 import com.trading.entity.PaymentOrder;
 import com.trading.entity.User;
 import com.trading.enums.PaymentGateway;
@@ -13,7 +17,6 @@ import com.trading.service.PaymentOrderService;
 import com.trading.web.response.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,7 +40,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     private String stripeApiKey;
 
     @Override
-    public PaymentOrder createPaymentOrder(User user, Long amount, PaymentGateway paymentGateway) {
+    public PaymentOrder createPaymentOrder(final User user, final Long amount, final PaymentGateway paymentGateway) {
         PaymentOrder paymentOrder = new PaymentOrder();
         paymentOrder.setUser(user);
         paymentOrder.setAmount(amount);
@@ -46,12 +49,12 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     }
 
     @Override
-    public PaymentOrder getPaymentOrderById(Long id) throws Exception {
+    public PaymentOrder getPaymentOrderById(final Long id) throws Exception {
         return paymentOrderRepo.findById(id).orElseThrow(() -> new Exception("Payment Order not found!"));
     }
 
     @Override
-    public Boolean approvePaymentOrder(PaymentOrder paymentOrder, String paymentId) throws RazorpayException {
+    public Boolean approvePaymentOrder(final PaymentOrder paymentOrder, final String paymentId) throws RazorpayException {
         if (paymentOrder.getPaymentOrderStatus().equals((PaymentOrderStatus.PENDING))) {
             if (paymentOrder.getPaymentGateway().equals(PaymentGateway.RAZORPAY)) {
                 RazorpayClient razorpayClient = new RazorpayClient(razorpayApiKey, razorpayApiSecret);
@@ -75,7 +78,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     }
 
     @Override
-    public PaymentResponse createRazorpayOrder(User user, Long amount) throws RazorpayException {
+    public PaymentResponse createRazorpayOrder(final User user, final Long amount) throws RazorpayException {
         Long amountInPaise = amount * 100;
 
         try {
@@ -98,7 +101,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
         }
     }
 
-    private static JSONObject getJsonObject(User user, Long amountInPaise) {
+    private static JSONObject getJsonObject(final User user, final Long amountInPaise) {
         JSONObject paymentLinkRequest = new JSONObject();
         paymentLinkRequest.put("amount", amountInPaise);
         paymentLinkRequest.put("currency", "INR");
@@ -121,7 +124,33 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     }
 
     @Override
-    public PaymentResponse createStripeOrder(User user, Long amount) {
-        return null;
+    public PaymentResponse createStripeOrder(final User user, final Long amount, final Long orderId) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
+        SessionCreateParams params =
+                SessionCreateParams.builder()
+                        .setMode(SessionCreateParams.Mode.PAYMENT)
+                        .setSuccessUrl("http://localhost:5173/wallet?orderId=" + orderId)
+                        .setCancelUrl("http://localhost:5173/payment/cancel")
+                        .addLineItem(
+                                SessionCreateParams.LineItem.builder()
+                                        .setQuantity(1L)
+                                        .setPriceData(
+                                                SessionCreateParams.LineItem.PriceData.builder()
+                                                        .setCurrency("usd")
+                                                        .setUnitAmount(amount * 100)
+                                                        .setProductData(
+                                                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                        .setName("Add Money to Wallet")
+                                                                        .build())
+                                                        .build())
+                                        .build())
+                        .build();
+
+        Session session = Session.create(params);
+
+        System.out.println("session _____" + session);
+        PaymentResponse paymentResponse = new PaymentResponse();
+        paymentResponse.setPaymentUrl(session.getUrl());
+        return paymentResponse;
     }
 }

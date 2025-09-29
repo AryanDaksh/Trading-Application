@@ -21,7 +21,7 @@ public class AssetServiceImpl implements AssetService {
     private final AssetRepo assetRepo;
 
     @Override
-    public Asset createAsset(User user, Coin coin, Double quantity) {
+    public Asset createAsset(final User user, final Coin coin, final Double quantity) {
         Asset asset = new Asset();
         asset.setUser(user);
         asset.setCoin(coin);
@@ -31,34 +31,34 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Asset getAssetById(Long assetId) throws Exception {
+    public Asset getAssetById(final Long assetId) throws Exception {
         return assetRepo.findById(assetId).orElseThrow(() -> new Exception("Asset not found!"));
     }
 
     @Override
-    public Asset getAssetByUserIdAndId(Long userId, Long assetId) {
+    public Asset getAssetByUserIdAndId(final Long userId, final Long assetId) {
         return null;
     }
 
     @Override
-    public List<Asset> getUserAssets(Long userId) {
+    public List<Asset> getUserAssets(final Long userId) {
         return assetRepo.findByUserId(userId);
     }
 
     @Override
-    public Asset updateAsset(Long assetId, Double quantity) throws Exception {
+    public Asset updateAsset(final Long assetId, final Double quantity) throws Exception {
         Asset oldAsset = getAssetById(assetId);
         oldAsset.setQuantity(quantity + oldAsset.getQuantity());
         return assetRepo.save(oldAsset);
     }
 
     @Override
-    public Asset findAssetByUserIdAndCoinId(Long userId, String coinId) {
+    public Asset findAssetByUserIdAndCoinId(final Long userId, final String coinId) {
         return assetRepo.findByUserIdAndCoinId(userId, coinId);
     }
 
     @Override
-    public void deleteAsset(Long assetId) {
+    public void deleteAsset(final Long assetId) {
         assetRepo.deleteById(assetId);
     }
 }

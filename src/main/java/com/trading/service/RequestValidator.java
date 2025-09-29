@@ -22,7 +22,7 @@ public class RequestValidator implements Validator<User> {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Authentication authenticate(User user) throws BadCredentialsException {
+    public Authentication authenticate(final User user) throws BadCredentialsException {
         String email = user.getEmail();
         String password = user.getPassword();
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);

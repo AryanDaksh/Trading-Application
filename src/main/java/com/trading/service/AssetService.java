@@ -12,11 +12,11 @@ import java.util.List;
  * @since 01-09-2025 23:39
  */
 public interface AssetService {
-    Asset createAsset(User user, Coin coin, Double quantity);
-    Asset getAssetById(Long assetId) throws Exception;
-    Asset getAssetByUserIdAndId(Long userId, Long assetId);
-    List<Asset> getUserAssets(Long userId);
-    Asset updateAsset(Long assetId, Double quantity) throws Exception;
-    Asset findAssetByUserIdAndCoinId(Long userId, String coinId);
-    void deleteAsset(Long assetId);
+    Asset createAsset(final User user, final Coin coin, final Double quantity);
+    Asset getAssetById(final Long assetId) throws Exception;
+    Asset getAssetByUserIdAndId(final Long userId, final Long assetId);
+    List<Asset> getUserAssets(final Long userId);
+    Asset updateAsset(final Long assetId, final Double quantity) throws Exception;
+    Asset findAssetByUserIdAndCoinId(final Long userId, final String coinId);
+    void deleteAsset(final Long assetId);
 }

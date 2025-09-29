@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void sendVerificationOtp(String jwtToken, VerificationType verificationType) throws MessagingException {
+    public void sendVerificationOtp(final String jwtToken, final VerificationType verificationType) throws MessagingException {
         User user = findUserProfileByJwt(jwtToken);
         VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user.getId());
         if (verificationCode != null) {
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User verifyOtpAndEnableTwoFactor(String jwtToken, String otp) {
+    public User verifyOtpAndEnableTwoFactor(final String jwtToken, final String otp) {
         User user = findUserProfileByJwt(jwtToken);
         VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user.getId());
         if (verificationCode == null) {
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse sendForgotPasswordOtp(String jwtToken, ForgotPasswordTokenRequest forgotPasswordTokenRequest) throws MessagingException {
+    public AuthResponse sendForgotPasswordOtp(final String jwtToken, final ForgotPasswordTokenRequest forgotPasswordTokenRequest) throws MessagingException {
         User user = findByEmail(forgotPasswordTokenRequest.getSendTo());
         String otp = OTPUtils.generateOtp();
         UUID uuid = UUID.randomUUID();
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse resetPassword(String id, ResetPasswordRequest resetPasswordRequest) {
+    public ApiResponse resetPassword(final String id, final ResetPasswordRequest resetPasswordRequest) {
         ForgotPasswordToken forgotPasswordToken = forgotPasswordService.findById(id);
         if (forgotPasswordToken.getExpirationTime().isBefore(Instant.now())) {
             forgotPasswordRepo.delete(forgotPasswordToken);
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
         throw new IllegalStateException("Invalid OTP provided for password reset.");
     }
 
-    public User findByEmail(String email) {
+    public User findByEmail(final String email) {
         User user = userRepo.findByEmail(email);
         if (user == null) {
             throw new IllegalStateException("User not found with the provided JWT token.");
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserProfileByJwt(String jwtToken) {
+    public User findUserProfileByJwt(final String jwtToken) {
         String email = JwtProvider.getEmailFromToken(jwtToken);
         User user = userRepo.findByEmail(email);
         if (user == null) {
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    public User findById(Long userId) {
+    public User findById(final Long userId) {
         Optional<User> userOptional = userRepo.findById(userId);
         if (userOptional.isEmpty()){
             throw new IllegalStateException("User not found with the provided ID.");
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    public User enableTwoFactorAuth(VerificationType verificationType, User user) {
+    public User enableTwoFactorAuth(final VerificationType verificationType, final User user) {
         TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication();
         twoFactorAuthentication.setIsEnabled(true);
         twoFactorAuthentication.setSendTo(verificationType);
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
         return userRepo.save(user);
     }
 
-    public void updatePassword(User user, String newPassword) {
+    public void updatePassword(final User user, final String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepo.save(user);
     }

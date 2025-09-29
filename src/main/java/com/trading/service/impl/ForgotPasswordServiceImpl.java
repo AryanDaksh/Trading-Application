@@ -22,7 +22,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final ForgotPasswordRepo forgotPasswordRepo;
 
     @Override
-    public ForgotPasswordToken createToken(User user, String id, String otp, VerificationType verificationType, String sendTo) {
+    public ForgotPasswordToken createToken(final User user, final String id, final String otp, final VerificationType verificationType, final String sendTo) {
         ForgotPasswordToken token = new ForgotPasswordToken();
         token.setUser(user);
         token.setOtp(otp);
@@ -34,18 +34,18 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
-    public ForgotPasswordToken findById(String id) {
+    public ForgotPasswordToken findById(final String id) {
         Optional<ForgotPasswordToken> token = forgotPasswordRepo.findById(id);
         return token.orElse(null);
     }
 
     @Override
-    public ForgotPasswordToken findByUser(Long userId) {
+    public ForgotPasswordToken findByUser(final Long userId) {
         return forgotPasswordRepo.findByUserId(userId);
     }
 
     @Override
-    public void deleteToken(ForgotPasswordToken token) {
+    public void deleteToken(final ForgotPasswordToken token) {
         forgotPasswordRepo.delete(token);
     }
 }

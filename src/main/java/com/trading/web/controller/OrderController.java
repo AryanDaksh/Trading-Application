@@ -44,7 +44,7 @@ public class OrderController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Order>> getAllOrdersForUser(@RequestHeader("Authorization") String jwt, @RequestParam(required = false) OrderType orderType, @RequestParam(required = false) String assetSymbol) throws Exception {
+    public ResponseEntity<List<Order>> getAllOrdersForUser(final @RequestHeader("Authorization") String jwt, final @RequestParam(required = false) OrderType orderType, final @RequestParam(required = false) String assetSymbol) throws Exception {
         Long userId = userService.findUserProfileByJwt(jwt).getId();
         List<Order> userOrders = orderService.getAllOrders(userId, orderType, assetSymbol);
         return new ResponseEntity<>(userOrders, HttpStatus.OK);

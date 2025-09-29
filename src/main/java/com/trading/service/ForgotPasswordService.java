@@ -10,8 +10,8 @@ import com.trading.enums.VerificationType;
  * @since 12-08-2025 20:48
  */
 public interface ForgotPasswordService {
-    ForgotPasswordToken createToken(User user, String id, String otp, VerificationType verificationType, String sendTo);
-    ForgotPasswordToken findById(String id);
-    ForgotPasswordToken findByUser(Long userId);
-    void deleteToken(ForgotPasswordToken token);
+    ForgotPasswordToken createToken(final User user, final String id, final String otp, final VerificationType verificationType, final String sendTo);
+    ForgotPasswordToken findById(final String id);
+    ForgotPasswordToken findByUser(final Long userId);
+    void deleteToken(final ForgotPasswordToken token);
 }

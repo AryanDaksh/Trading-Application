@@ -21,7 +21,7 @@ public class WatchlistServiceImpl implements WatchlistService {
     private final WatchlistRepo watchlistRepo;
 
     @Override
-    public Watchlist findUserWatchlist(Long userId) throws Exception {
+    public Watchlist findUserWatchlist(final Long userId) throws Exception {
         Watchlist watchlist = watchlistRepo.findByUserId(userId);
         if(watchlist == null) {
             throw new Exception("Watchlist not found");
@@ -30,14 +30,14 @@ public class WatchlistServiceImpl implements WatchlistService {
     }
 
     @Override
-    public Watchlist createUserWatchlist(User user) {
+    public Watchlist createUserWatchlist(final User user) {
         Watchlist watchlist = new Watchlist();
         watchlist.setUser(user);
         return watchlistRepo.save(watchlist);
     }
 
     @Override
-    public Watchlist findByWatchlistId(Long id) throws Exception {
+    public Watchlist findByWatchlistId(final Long id) throws Exception {
         Optional<Watchlist> optionalWatchList = watchlistRepo.findById(id);
         if (optionalWatchList.isEmpty()) {
             throw new Exception("Watchlist not found");
@@ -46,7 +46,7 @@ public class WatchlistServiceImpl implements WatchlistService {
     }
 
     @Override
-    public Coin addCoinToWatchlist(Coin coin, User user) throws Exception {
+    public Coin addCoinToWatchlist(final Coin coin, final User user) throws Exception {
         Watchlist watchList = findUserWatchlist(user.getId());
         if(watchList.getCoins().contains(coin)) {
             watchList.getCoins().remove(coin);

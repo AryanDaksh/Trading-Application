@@ -21,14 +21,14 @@ public class PaymentDetailsController {
     private final UserService userService;
 
     @PostMapping("/payment-details")
-    public ResponseEntity<PaymentDetails> addPaymentDetails(@RequestBody PaymentDetails paymentDetailsRequest, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<PaymentDetails> addPaymentDetails(final @RequestBody PaymentDetails paymentDetailsRequest, final @RequestHeader("Authorization") String jwt) {
         User user = userService.findUserProfileByJwt(jwt);
         PaymentDetails paymentDetails = paymentDetailsService.addPaymentDetails(paymentDetailsRequest.getAccountNumber(),  paymentDetailsRequest.getAccountHolderName(), paymentDetailsRequest.getIfscCode(), paymentDetailsRequest.getBankName(), user);
         return new ResponseEntity<>(paymentDetails, HttpStatus.CREATED);
     }
 
     @GetMapping("/payment-details")
-    public ResponseEntity<PaymentDetails> getPaymentDetailsByUser(@RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<PaymentDetails> getPaymentDetailsByUser(final @RequestHeader("Authorization") String jwt) {
         User user = userService.findUserProfileByJwt(jwt);
         PaymentDetails paymentDetails = paymentDetailsService.getPaymentDetailsByUser(user);
         return new ResponseEntity<>(paymentDetails, HttpStatus.OK);

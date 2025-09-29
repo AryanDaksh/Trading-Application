@@ -28,17 +28,17 @@ public class CoinServiceImpl implements CoinService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public List<Coin> getCoinList(int page) {
+    public List<Coin> getCoinList(final int page) {
         return coinGekkoClient.getCoinList(page);
     }
 
     @Override
-    public String getMarketChart(String coinId, int days) {
+    public String getMarketChart(final String coinId, final int days) {
         return coinGekkoClient.getMarketChart(coinId, days);
     }
 
     @Override
-    public String getCoinDetails(String coinId) throws JsonProcessingException {
+    public String getCoinDetails(final String coinId) throws JsonProcessingException {
         String coinDetails = coinGekkoClient.getCoinDetails(coinId);
         JsonNode jsonNode = objectMapper.readTree(coinDetails);
 
@@ -77,7 +77,7 @@ public class CoinServiceImpl implements CoinService {
     }
 
     @Override
-    public Coin findCoinById(String coinId) throws Exception {
+    public Coin findCoinById(final String coinId) throws Exception {
         Optional<Coin> coinOptional = coinRepo.findById(coinId);
         if (coinOptional.isEmpty()) {
             throw new Exception("Coin not found!");
@@ -86,7 +86,7 @@ public class CoinServiceImpl implements CoinService {
     }
 
     @Override
-    public String searchCoin(String keyword) {
+    public String searchCoin(final String keyword) {
         return coinGekkoClient.searchCoin(keyword);
     }
 

@@ -28,7 +28,7 @@ public class TwoFactorOTPServiceImpl implements TwoFactorOTPService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public TwoFactorOTP createTwoFactorOTP(User user, String otpCode, String jwtToken) {
+    public TwoFactorOTP createTwoFactorOTP(final User user, final String otpCode, final String jwtToken) {
         UUID uuid = UUID.randomUUID();
         String id = uuid.toString();
 
@@ -43,18 +43,18 @@ public class TwoFactorOTPServiceImpl implements TwoFactorOTPService {
     }
 
     @Override
-    public TwoFactorOTP findByUser(Long userId) {
+    public TwoFactorOTP findByUser(final Long userId) {
         return twoFactorOTPRepo.findByUserId(userId);
     }
 
     @Override
-    public TwoFactorOTP findById(String id) {
+    public TwoFactorOTP findById(final String id) {
         Optional<TwoFactorOTP> optional = twoFactorOTPRepo.findById(id);
         return optional.orElse(null);
     }
 
     @Override
-    public boolean verifyTwoFactorOTP(TwoFactorOTP twoFactorOTP, String otpCode) {
+    public boolean verifyTwoFactorOTP(final TwoFactorOTP twoFactorOTP, final String otpCode) {
         if (twoFactorOTP.getExpiryTime().isBefore(DateUtils.getCurrentDateTime())) {
             log.warn("OTP expired. Please request a new OTP.");
             twoFactorOTPRepo.delete(twoFactorOTP);
@@ -77,7 +77,7 @@ public class TwoFactorOTPServiceImpl implements TwoFactorOTPService {
 
 
     @Override
-    public void deleteTwoFactorOTP(TwoFactorOTP twoFactorOTP) {
+    public void deleteTwoFactorOTP(final TwoFactorOTP twoFactorOTP) {
         twoFactorOTPRepo.delete(twoFactorOTP);
     }
 }

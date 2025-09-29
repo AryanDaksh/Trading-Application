@@ -21,19 +21,19 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody User user) {
+    public ResponseEntity<AuthResponse> register(final @RequestBody User user) {
         AuthResponse response = authService.registerUser(user);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<AuthResponse> signIn(@RequestBody User user) throws MessagingException {
+    public ResponseEntity<AuthResponse> signIn(final @RequestBody User user) throws MessagingException {
         AuthResponse response = authService.loginUser(user);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/two-factor/otp/{otp}")
-    public ResponseEntity<AuthResponse> verifyTwoFactorAuth(@RequestParam("otp") String otp, @RequestParam("sessionId") String sessionId) {
+    public ResponseEntity<AuthResponse> verifyTwoFactorAuth(final @RequestParam("otp") String otp, final @RequestParam("sessionId") String sessionId) {
         AuthResponse response = authService.verify2FAOtp(otp, sessionId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

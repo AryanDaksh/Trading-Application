@@ -11,8 +11,8 @@ import com.trading.enums.VerificationType;
  */
 
 public interface VerificationCodeService {
-    VerificationCode sendVerificationCode(User user, VerificationType verificationType);
-    VerificationCode getVerificationCodeById(Long id);
-    VerificationCode getVerificationCodeByUser(Long userId);
-    void deleteVerificationCode(VerificationCode verificationCode);
+    VerificationCode sendVerificationCode(final User user, final VerificationType verificationType);
+    VerificationCode getVerificationCodeById(final Long id);
+    VerificationCode getVerificationCodeByUser(final Long userId);
+    void deleteVerificationCode(final VerificationCode verificationCode);
 }

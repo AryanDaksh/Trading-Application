@@ -11,8 +11,8 @@ import java.util.List;
  * @since 02-09-2025 00:20
  */
 public interface WithdrawalService {
-    Withdrawal requestWithdrawal(Long amount, User user);
-    Withdrawal processWithdrawal(Long withdrawalId, Boolean acceptance) throws Exception;
-    List<Withdrawal> getUserWithdrawalHistory(User user);
+    Withdrawal requestWithdrawal(final Long amount, final User user);
+    Withdrawal processWithdrawal(final Long withdrawalId, final Boolean acceptance) throws Exception;
+    List<Withdrawal> getUserWithdrawalHistory(final User user);
     List<Withdrawal> getAllWithdrawals();
 }

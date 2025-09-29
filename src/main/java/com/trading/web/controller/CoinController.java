@@ -25,20 +25,20 @@ public class CoinController {
     private final ObjectMapper objectMapper;
 
     @GetMapping("/list")
-    ResponseEntity<List<Coin>> getCoinList(@RequestParam("page") int page) {
+    ResponseEntity<List<Coin>> getCoinList(final @RequestParam("page") int page) {
         List<Coin> coins = coinService.getCoinList(page);
         return new ResponseEntity<>(coins, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{coinId}/chart")
-    ResponseEntity<JsonNode> getMarketChart(@PathVariable("coinId") String coinId, @RequestParam("days") int days) throws JsonProcessingException {
+    ResponseEntity<JsonNode> getMarketChart(final @PathVariable("coinId") String coinId, final @RequestParam("days") int days) throws JsonProcessingException {
         String marketChart = coinService.getMarketChart(coinId, days);
         JsonNode jsonNode = objectMapper.readTree(marketChart);
         return new ResponseEntity<>(jsonNode, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/search")
-    ResponseEntity<JsonNode> searchCoin(@RequestParam("q") String keyword) throws JsonProcessingException {
+    ResponseEntity<JsonNode> searchCoin(final @RequestParam("q") String keyword) throws JsonProcessingException {
         String marketChart = coinService.searchCoin(keyword);
         JsonNode jsonNode = objectMapper.readTree(marketChart);
         return new ResponseEntity<>(jsonNode, HttpStatus.ACCEPTED);
@@ -52,7 +52,7 @@ public class CoinController {
     }
 
     @GetMapping("/details/{coinId}")
-    ResponseEntity<JsonNode> getCoinDetails(@PathVariable("coinId") String coinId) throws JsonProcessingException {
+    ResponseEntity<JsonNode> getCoinDetails(final @PathVariable("coinId") String coinId) throws JsonProcessingException {
         String marketChart = coinService.getCoinDetails(coinId);
         JsonNode jsonNode = objectMapper.readTree(marketChart);
         return new ResponseEntity<>(jsonNode, HttpStatus.ACCEPTED);

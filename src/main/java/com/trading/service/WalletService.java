@@ -10,9 +10,9 @@ import com.trading.entity.Wallet;
  * @since 01-09-2025 01:12
  */
 public interface WalletService {
-    Wallet getUserWallet(User user);
-    Wallet addBalance(Wallet wallet, Long amount);
-    Wallet findWalletById(Long id) throws Exception;
-    Wallet walletToWalletTransfer(User sender, Wallet receiverWallet, Long amount) throws Exception;
-    Wallet payOrderPayment(Order order, User user) throws Exception;
+    Wallet getUserWallet(final User user);
+    Wallet addBalance(final Wallet wallet, final Long amount);
+    Wallet findWalletById(final Long id) throws Exception;
+    Wallet walletToWalletTransfer(final User sender, final Wallet receiverWallet, final Long amount) throws Exception;
+    Wallet payOrderPayment(final Order order, final User user) throws Exception;
 }

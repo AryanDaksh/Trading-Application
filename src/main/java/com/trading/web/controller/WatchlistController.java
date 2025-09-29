@@ -25,20 +25,20 @@ public class WatchlistController {
     private final CoinService coinService;
 
     @GetMapping("/user")
-    public ResponseEntity<Watchlist> getUserWatchlist(@RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Watchlist> getUserWatchlist(final @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
         Watchlist watchlist = watchlistService.findUserWatchlist(user.getId());
         return new ResponseEntity<>(watchlist, HttpStatus.OK);
     }
 
     @GetMapping("/{watchlistId}")
-    public ResponseEntity<Watchlist> getWatchlistById(@PathVariable Long watchlistId) throws Exception {
+    public ResponseEntity<Watchlist> getWatchlistById(final @PathVariable Long watchlistId) throws Exception {
         Watchlist watchlist = watchlistService.findByWatchlistId(watchlistId);
         return new ResponseEntity<>(watchlist, HttpStatus.OK);
     }
 
     @PatchMapping("/add/coin/{coinId}")
-    public ResponseEntity<Coin> addItemToWatchlist(@RequestHeader("Authorization") String jwt, @PathVariable String coinId) throws Exception {
+    public ResponseEntity<Coin> addItemToWatchlist(final @RequestHeader("Authorization") String jwt, final @PathVariable String coinId) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
         Coin coin = coinService.findCoinById(coinId);
         Coin addedCoin = watchlistService.addCoinToWatchlist(coin, user);
@@ -46,7 +46,7 @@ public class WatchlistController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Watchlist> createUserWatchlist(@RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Watchlist> createUserWatchlist(final @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
         Watchlist watchlist = watchlistService.createUserWatchlist(user);
         return new ResponseEntity<>(watchlist, HttpStatus.CREATED);

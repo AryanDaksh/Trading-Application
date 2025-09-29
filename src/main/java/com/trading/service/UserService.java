@@ -14,9 +14,9 @@ import jakarta.mail.MessagingException;
  * @since 10-08-2025 23:28
  */
 public interface UserService {
-    void sendVerificationOtp(String jwtToken, VerificationType verificationType) throws MessagingException;
-    User verifyOtpAndEnableTwoFactor(String jwtToken, String otp);
-    AuthResponse sendForgotPasswordOtp(String jwtToken, ForgotPasswordTokenRequest forgotPasswordTokenRequest) throws MessagingException;
-    ApiResponse resetPassword(String id, ResetPasswordRequest resetPasswordRequest);
-    User findUserProfileByJwt(String jwtToken);
+    void sendVerificationOtp(final String jwtToken, final VerificationType verificationType) throws MessagingException;
+    User verifyOtpAndEnableTwoFactor(final String jwtToken, final String otp);
+    AuthResponse sendForgotPasswordOtp(final String jwtToken, final ForgotPasswordTokenRequest forgotPasswordTokenRequest) throws MessagingException;
+    ApiResponse resetPassword(final String id, final ResetPasswordRequest resetPasswordRequest);
+    User findUserProfileByJwt(final String jwtToken);
 }

@@ -18,7 +18,7 @@ public class PaymentDetailsServiceImpl implements PaymentDetailsService {
     private final PaymentDetailsRepo paymentDetailsRepo;
 
     @Override
-    public PaymentDetails addPaymentDetails(String accountNumber, String accountHolderName, String ifscCode, String bankName, User user) {
+    public PaymentDetails addPaymentDetails(final String accountNumber, final String accountHolderName, final String ifscCode, final String bankName, final User user) {
         PaymentDetails paymentDetails = new PaymentDetails();
         paymentDetails.setAccountNumber(accountNumber);
         paymentDetails.setAccountHolderName(accountHolderName);
@@ -29,7 +29,7 @@ public class PaymentDetailsServiceImpl implements PaymentDetailsService {
     }
 
     @Override
-    public PaymentDetails getPaymentDetailsByUser(User user) {
+    public PaymentDetails getPaymentDetailsByUser(final User user) {
         return paymentDetailsRepo.findByUserId(user.getId());
     }
 }

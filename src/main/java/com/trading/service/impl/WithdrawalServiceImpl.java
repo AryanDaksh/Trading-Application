@@ -23,7 +23,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private final WithdrawalRepo withdrawalRepo;
 
     @Override
-    public Withdrawal requestWithdrawal(Long amount, User user) {
+    public Withdrawal requestWithdrawal(final Long amount, final User user) {
         Withdrawal withdrawal = new Withdrawal();
         withdrawal.setAmount(amount);
         withdrawal.setUser(user);
@@ -32,7 +32,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     }
 
     @Override
-    public Withdrawal processWithdrawal(Long withdrawalId, Boolean acceptance) throws Exception {
+    public Withdrawal processWithdrawal(final Long withdrawalId, final Boolean acceptance) throws Exception {
         Optional<Withdrawal> optionalWithdrawal = withdrawalRepo.findById(withdrawalId);
         if (optionalWithdrawal.isEmpty()) {
             throw new Exception("Withdrawal not found");
@@ -48,7 +48,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     }
 
     @Override
-    public List<Withdrawal> getUserWithdrawalHistory(User user) {
+    public List<Withdrawal> getUserWithdrawalHistory(final User user) {
         return withdrawalRepo.findByUserId(user.getId());
     }
 

@@ -28,7 +28,7 @@ public class WithdrawalController {
     private WalletService walletService;
 
     @PostMapping("/{amount}")
-    public ResponseEntity<?> withdrawalRequest(@PathVariable Long amount, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<?> withdrawalRequest(final @PathVariable Long amount, final @RequestHeader("Authorization") String jwt) {
         User user = userService.findUserProfileByJwt(jwt);
         Wallet wallet = walletService.getUserWallet(user);
         Withdrawal withdrawal = withdrawalService.requestWithdrawal(amount, user);
@@ -38,7 +38,7 @@ public class WithdrawalController {
     }
 
     @PatchMapping("/admin/{id}/proceed/{accept}")
-    public ResponseEntity<?> processWithdrawal(@PathVariable Long id, @PathVariable Boolean accept, @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<?> processWithdrawal(final @PathVariable Long id, final @PathVariable Boolean accept, final @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
         Withdrawal withdrawal = withdrawalService.processWithdrawal(id, accept);
         Wallet wallet = walletService.getUserWallet(user);
@@ -49,7 +49,7 @@ public class WithdrawalController {
     }
 
     @GetMapping("/admin/history")
-    public ResponseEntity<List<Withdrawal>> getAllWithdrawalHistory(@RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<List<Withdrawal>> getAllWithdrawalHistory(final @RequestHeader("Authorization") String jwt) {
         List<Withdrawal> withdrawals = withdrawalService.getAllWithdrawals();
         return new ResponseEntity<>(withdrawals, HttpStatus.OK);
     }

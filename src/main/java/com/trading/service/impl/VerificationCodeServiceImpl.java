@@ -22,7 +22,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     private final VerificationCodeRepo verificationCodeRepo;
 
     @Override
-    public VerificationCode sendVerificationCode(User user, VerificationType verificationType) {
+    public VerificationCode sendVerificationCode(final User user, final VerificationType verificationType) {
         VerificationCode code = new VerificationCode();
         code.setOtp(OTPUtils.generateOtp());
         code.setVerificationType(verificationType);
@@ -32,7 +32,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
-    public VerificationCode getVerificationCodeById(Long id) {
+    public VerificationCode getVerificationCodeById(final Long id) {
         Optional<VerificationCode> verificationCode = verificationCodeRepo.findById(id);
         if (verificationCode.isPresent()) {
             return verificationCode.get();
@@ -41,12 +41,12 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
-    public VerificationCode getVerificationCodeByUser(Long userId) {
+    public VerificationCode getVerificationCodeByUser(final Long userId) {
         return verificationCodeRepo.findByUserId(userId);
     }
 
     @Override
-    public void deleteVerificationCode(VerificationCode verificationCode) {
+    public void deleteVerificationCode(final VerificationCode verificationCode) {
         verificationCodeRepo.delete(verificationCode);
     }
 }
